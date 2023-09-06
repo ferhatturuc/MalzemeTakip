@@ -2,7 +2,7 @@
 
 namespace MalzemeTakip.Repositories
 {
-    public class MalzemeRepository : IMalzemeInterface
+    public class MalzemeRepository : IMalzemeRepository
     {
         public Task<Malzeme> AddAsync(Malzeme malzeme)
         {

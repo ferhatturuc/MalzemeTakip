@@ -16,7 +16,7 @@ namespace MalzemeTakip
             builder.Services.AddDbContext<MalzemeTakipDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("MalzemeTakipDbConnectinString")));
 
-           // builder.Services.AddScoped<IMalzemeRepository, MalzemeRepository>();
+            builder.Services.AddScoped<IMalzemeRepository, MalzemeRepository>();
 
             var app = builder.Build();
 

@@ -2,7 +2,7 @@
 
 namespace MalzemeTakip.Repositories
 {
-    public interface IMalzemeInterface
+    public interface IMalzemeRepository
     {
         Task<IEnumerable<Malzeme>> GetAllAsync();
         Task<Malzeme> GetAsync(string name);
