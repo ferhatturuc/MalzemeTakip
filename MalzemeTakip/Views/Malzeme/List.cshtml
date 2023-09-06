@@ -1,0 +1,41 @@
+﻿@model List<MalzemeTakip.Models.Domain.Malzeme>
+@{
+}
+
+<div class="bg-secondary bg-opacity-10 py-2">
+    <div class="container">
+        <h1> Malzemeleri Listele</h1>
+    </div>
+</div>
+
+<div class="container" py-5>
+    @if (Model != null && Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>İsim</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var malzeme in Model)
+                {
+                    <tr>
+                        <td>@malzeme.Id</td>
+                        <td>@malzeme.MalzemeName</td>
+                        <td>
+                            <a asp-area="" asp-controller="Malzeme"
+                            asp-action="Edit"
+                            asp-route-name="@malzeme.MalzemeName">Düzenle</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Malzeme Bulunamadı!</p>
+    }
+</div>

@@ -1,0 +1,41 @@
+﻿@model List<MalzemeTakip.Models.Domain.Yemek>
+@{
+}
+
+<div class="bg-secondary bg-opacity-10 py-2">
+    <div class="container">
+        <h1> Yemekleri Listele</h1>
+    </div>
+</div>
+
+<div class="container" py-5>
+    @if (Model != null && Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>İsim</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var yemek in Model)
+                {
+                    <tr>
+                        <td>@yemek.Id</td>
+                        <td>@yemek.YemekName</td>
+                        <td>
+                            <a asp-area="" asp-controller="Yemek"
+                               asp-action="Edit"
+                               asp-route-name="@yemek.YemekName">Düzenle</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Yemek Bulunamadı!</p>
+    }
+</div>

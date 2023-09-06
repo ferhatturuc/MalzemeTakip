@@ -1,0 +1,22 @@
+﻿@model MalzemeTakip.Models.ViewModels.AddMalzemeRequest
+@{
+}
+
+<div class="bg-secondary bg-opacity-10 py-2">
+    <div class="container">
+        <h1>Yeni Malzeme Ekle</h1>
+    </div>
+</div>
+
+<div class="container py-5">
+    <form method="post">
+        <div class="mb-3">
+            <label class="form-label">Malzeme İsmi</label>
+            <input type="text" class="form-control" id="MalzemeName" asp-for="MalzemeName" />
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-dark">Submit</button>
+        </div>
+    </form>
+</div>
