@@ -1,24 +1,33 @@
-﻿/*using MalzemeTakip.Data;
-using MalzemeTakip.Models.Domain;
+﻿/*using MalzemeTakip.Models.Domain;
 using MalzemeTakip.Models.ViewModels;
+using MalzemeTakip.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MalzemeTakip.Controllers
 {
     public class YemekController : Controller
     {
-        private readonly MalzemeTakipDbContext malzemeTakipDbContext;
+        private readonly IMalzemeRepository malzemeRepository;
+        private readonly IYemekRepository yemekRepository;
 
-        public YemekController(MalzemeTakipDbContext malzemeTakipDbContext)
+        public YemekController(IMalzemeRepository malzemeRepository, IYemekRepository yemekRepository)
         {
-            this.malzemeTakipDbContext = malzemeTakipDbContext;
+            this.malzemeRepository = malzemeRepository;
+            this.yemekRepository = yemekRepository;
         }
 
         [HttpGet]
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
-            return View();
+            var malzeme = await malzemeRepository.GetAllAsync();
+
+            var model = new AddYemekRequest
+            {
+                Malzeme = malzeme.Select(x => new SelectListItem { Text = x.MalzemeName, Value = x.Id.ToString() })
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -31,18 +40,30 @@ namespace MalzemeTakip.Controllers
                 YemekName = addYemekRequest.YemekName
             };
 
-            await malzemeTakipDbContext.Yemekler.AddAsync(yemek);
-            await malzemeTakipDbContext.SaveChangesAsync();
 
-            return RedirectToAction("List");
-            //return View("Add");
+            var selectedMalzeme = new List<Malzeme>();
+            foreach (var selectedMalzemeId in addYemekRequest.SelectedMalzeme)
+            {
+                var selectedMalzemeIdAsGuid = selectedMalzemeId;
+                var existingMalzeme = await malzemeRepository.GetAsync(selectedMalzemeIdAsGuid);
+
+                if (existingMalzeme != null)
+                {
+                    selectedMalzeme.Add(existingMalzeme);
+                }
+            }
+
+            yemek.Malzemeler = selectedMalzeme;
+            await yemekRepository.AddAsync(yemek);
+
+            return RedirectToAction("Add");
         }
 
         [HttpGet]
         [ActionName("List")]
         public async Task<IActionResult> List()
         {
-            var yemek = await malzemeTakipDbContext.Yemekler.ToListAsync();
+            var yemek = await yemekRepository.GetAllAsync();
 
             return View(yemek);
         }
@@ -50,21 +71,29 @@ namespace MalzemeTakip.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(string name)
         {
-            //var malzeme =malzemeTakipDbContext.Malzemeler.Find(malzemeName);
-
-            var yemek = await malzemeTakipDbContext.Yemekler.FirstOrDefaultAsync(m => m.YemekName == name);
+            var yemek = await yemekRepository.GetAsync(name);
+            var malzemeDomainModel = await malzemeRepository.GetAllAsync();
 
             if (yemek != null)
             {
-                var editYemekRequest = new EditYemekRequest
+                // map the domain model into the view model
+                var model = new EditYemekRequest
                 {
                     Id = yemek.Id,
-                    //YemekName = yemek.YemekName
+                    
+                    MalzemeName = malzemeDomainModel.Select(x => new SelectListItem
+                    {
+                        Text = x.MalzemeName,
+                        Value = x.Id.ToString()
+                    }),
+                    Selectedmalzeme = yemek.Malzemeler.Select(x => x.Id.ToString()).ToArray()
                 };
 
-                return View(editYemekRequest);
+                return View(model);
+
             }
 
+            // pass data to view
             return View(null);
         }
     }

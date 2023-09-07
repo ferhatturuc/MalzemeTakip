@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MalzemeTakip.Migrations
 {
     [DbContext(typeof(MalzemeTakipDbContext))]
-    [Migration("20230904081044_Initial Migration")]
+    [Migration("20230907113903_Initial Migration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -54,14 +54,6 @@ namespace MalzemeTakip.Migrations
 
                     b.Property<int>("MalzemeMiktar")
                         .HasColumnType("int");
-
-                    b.Property<string>("MalzemeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OgunName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("YemekName")
                         .IsRequired()

@@ -52,14 +52,6 @@ namespace MalzemeTakip.Migrations
                     b.Property<int>("MalzemeMiktar")
                         .HasColumnType("int");
 
-                    b.Property<string>("MalzemeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OgunName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("YemekName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

@@ -15,6 +15,12 @@
             <input type="text" class="form-control" id="YemekName" asp-for="YemekName" />
         </div>
 
+        <div class="mb-3">
+            <label class="form-label">Malzemeler</label>
+            <select class="form-select" asp-items="@Model.Malzeme"
+                    asp-for="SelectedMalzeme">
+            </select>
+        </div>
 
         <div class="mb-3">
             <button type="submit" class="btn btn-dark">Submit</button>

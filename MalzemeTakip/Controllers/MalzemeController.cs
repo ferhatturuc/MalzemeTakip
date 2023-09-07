@@ -1,6 +1,7 @@
-﻿using MalzemeTakip.Data;
-using MalzemeTakip.Models.Domain;
+﻿using MalzemeTakip.Models.Domain;
 using MalzemeTakip.Models.ViewModels;
+using MalzemeTakip.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,11 +9,11 @@ namespace MalzemeTakip.Controllers
 {
     public class MalzemeController : Controller
     {
-        private readonly MalzemeTakipDbContext malzemeTakipDbContext;
+        private readonly IMalzemeRepository malzemeRepository;
 
-        public MalzemeController(MalzemeTakipDbContext malzemeTakipDbContext)
+        public MalzemeController(IMalzemeRepository malzemeRepository)
         {
-            this.malzemeTakipDbContext = malzemeTakipDbContext;
+            this.malzemeRepository = malzemeRepository;
         }
 
         [HttpGet]
@@ -27,22 +28,22 @@ namespace MalzemeTakip.Controllers
         {
             // Mapping AddMalzemeRequest to Malzeme domain model
             var malzeme = new Malzeme
+         
             {
                 MalzemeName = addMalzemeRequest.MalzemeName
             };
 
-            await malzemeTakipDbContext.Malzemeler.AddAsync(malzeme);
-            await malzemeTakipDbContext.SaveChangesAsync();
+            await malzemeRepository.AddAsync(malzeme);
 
             return RedirectToAction("List");
-            //return View("Add");
         }
 
         [HttpGet]
         [ActionName("List")]
         public async Task<IActionResult> List()
         {
-            var malzemeler = await malzemeTakipDbContext.Malzemeler.ToListAsync();
+            // use dbContext to read the Malzemes
+            var malzemeler = await malzemeRepository.GetAllAsync();
 
             return View(malzemeler);
         }
@@ -50,16 +51,14 @@ namespace MalzemeTakip.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(string name)
         {
-            //var malzeme =malzemeTakipDbContext.Malzemeler.Find(malzemeName);
-
-            var malzeme = await malzemeTakipDbContext.Malzemeler.FirstOrDefaultAsync(m => m.MalzemeName == name);
+            var malzeme = await malzemeRepository.GetAsync(name);
 
             if (malzeme != null)
             {
                 var editMalzemeRequest = new EditMalzemeRequest
                 {
                     Id = malzeme.Id,
-                    MalzemeName = malzeme.MalzemeName
+                    MalzemeName = malzeme.MalzemeName,
                 };
 
                 return View(editMalzemeRequest);
@@ -74,40 +73,37 @@ namespace MalzemeTakip.Controllers
             var malzeme = new Malzeme
             {
                 Id = editMalzemeRequest.Id,
-                MalzemeName = editMalzemeRequest.MalzemeName
+                MalzemeName = editMalzemeRequest.MalzemeName,
             };
 
-            var existingMalzeme = await malzemeTakipDbContext.Malzemeler.FindAsync(malzeme.Id);
+            var updatedMalzeme = await malzemeRepository.UpdateAsync(malzeme);
 
-            if (existingMalzeme != null)
+            if (updatedMalzeme != null)
             {
-                existingMalzeme.MalzemeName = malzeme.MalzemeName;
-
-                await malzemeTakipDbContext.SaveChangesAsync();
-
-                return RedirectToAction("Edit", new { name = editMalzemeRequest.MalzemeName });
-
-                //return RedirectToAction("List");
+                // Show success notification
+            }
+            else
+            {
+                // Show error notification
             }
 
             return RedirectToAction("Edit", new { name = editMalzemeRequest.MalzemeName });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(EditMalzemeRequest editMalzemeRequest)
+        public async Task<IActionResult> Delete(AddMalzemeRequest editMalzemeRequest)
         {
-            var malzeme = await malzemeTakipDbContext.Malzemeler.FindAsync(editMalzemeRequest.Id);
+            var deletedMalzeme = await malzemeRepository.DeleteAsync(editMalzemeRequest.Id);
 
-            if (malzeme != null)
+            if (deletedMalzeme != null)
             {
-                malzemeTakipDbContext.Malzemeler.Remove(malzeme);
-                await malzemeTakipDbContext.SaveChangesAsync();
-
+                // Show success notification
                 return RedirectToAction("List");
             }
 
+            // Show an error notification
             return RedirectToAction("Edit", new { name = editMalzemeRequest.MalzemeName });
-
         }
+ 
     }
 }

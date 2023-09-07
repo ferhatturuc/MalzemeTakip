@@ -1,32 +1,63 @@
-﻿using MalzemeTakip.Models.Domain;
+﻿using MalzemeTakip.Data;
+using MalzemeTakip.Models.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace MalzemeTakip.Repositories
 {
     public class MalzemeRepository : IMalzemeRepository
     {
-        public Task<Malzeme> AddAsync(Malzeme malzeme)
+        private readonly MalzemeTakipDbContext malzemeTakipDbContext;
+
+        public MalzemeRepository(MalzemeTakipDbContext malzemeTakipDbContext)
         {
-            throw new NotImplementedException();
+            this.malzemeTakipDbContext = malzemeTakipDbContext;
         }
 
-        public Task<Malzeme?> DeleteAsync(string name)
+        public async Task<Malzeme> AddAsync(Malzeme Malzeme)
         {
-            throw new NotImplementedException();
+            await malzemeTakipDbContext.Malzemeler.AddAsync(Malzeme);
+            await malzemeTakipDbContext.SaveChangesAsync();
+            return Malzeme;
         }
 
-        public Task<IEnumerable<Malzeme>> GetAllAsync()
+        public async Task<Malzeme?> DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var existingMalzeme = await malzemeTakipDbContext.Malzemeler.FindAsync(id);
+
+            if (existingMalzeme != null)
+            {
+                malzemeTakipDbContext.Malzemeler.Remove(existingMalzeme);
+                await malzemeTakipDbContext.SaveChangesAsync();
+                return existingMalzeme;
+            }
+
+            return null;
         }
 
-        public Task<Malzeme> GetAsync(string name)
+        public async Task<IEnumerable<Malzeme>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await malzemeTakipDbContext.Malzemeler.ToListAsync();
         }
 
-        public Task<Malzeme?> UpdateAsync(Malzeme malzeme)
+        public Task<Malzeme?> GetAsync(string name)
         {
-            throw new NotImplementedException();
+            return malzemeTakipDbContext.Malzemeler.FirstOrDefaultAsync(x => x.MalzemeName == name);
+        }
+
+        public async Task<Malzeme?> UpdateAsync(Malzeme Malzeme)
+        {
+            var existingMalzeme = await malzemeTakipDbContext.Malzemeler.FindAsync(Malzeme.Id);
+
+            if (existingMalzeme != null)
+            {
+                existingMalzeme.MalzemeName = Malzeme.MalzemeName;
+
+                await malzemeTakipDbContext.SaveChangesAsync();
+
+                return existingMalzeme;
+            }
+
+            return null;
         }
     }
 }
