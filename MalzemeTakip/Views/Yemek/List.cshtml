@@ -15,7 +15,9 @@
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>İsim</th>
+                    <th>Yemek Adı</th>
+                    <th>Malzeme Adı</th>
+                    <th>Malzeme Miktarı</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,11 +26,15 @@
                     <tr>
                         <td>@yemek.Id</td>
                         <td>@yemek.YemekName</td>
+                        <td>@yemek.MalzemeName</td>
+                        <td>@yemek.MalzemeMiktar</td>
+
                         <td>
                             <a asp-area="" asp-controller="Yemek"
                                asp-action="Edit"
                                asp-route-name="@yemek.YemekName">Düzenle</a>
                         </td>
+                       
                     </tr>
                 }
             </tbody>

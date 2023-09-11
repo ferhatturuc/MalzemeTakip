@@ -16,8 +16,8 @@ namespace MalzemeTakip.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MalzemeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MalzemeMiktar = table.Column<int>(type: "int", nullable: false)
+                    MalzemeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MalzemeMiktar = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -29,9 +29,9 @@ namespace MalzemeTakip.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    YemekName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MalzemeMiktar = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    YemekName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MalzemeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MalzemeMiktar = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {

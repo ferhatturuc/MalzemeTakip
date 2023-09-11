@@ -17,6 +17,7 @@ namespace MalzemeTakip
             options.UseSqlServer(builder.Configuration.GetConnectionString("MalzemeTakipDbConnectinString")));
 
             builder.Services.AddScoped<IMalzemeRepository, MalzemeRepository>();
+            builder.Services.AddScoped<IYemekRepository, YemekRepository>();
 
             var app = builder.Build();
 

@@ -1,14 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 namespace MalzemeTakip.Models.ViewModels
 {
     public class AddYemekRequest
     {
-        public string YemekName { get; set; }
+        public Guid Id { get; set; }
+        public string? YemekName { get; set; }
+        public string? MalzemeName { get; set; }
+        public int? MalzemeMiktar { get; set; }
 
 
-        public IEnumerable<SelectListItem> Malzeme { get; set; }
-        public string[] SelectedMalzeme { get; set; } = Array.Empty<string>();
-        //public int MalzemeMiktar { get; set; }
+        //public DateTime Date { get; set; }
+        public IEnumerable<SelectListItem>? Malzemeler { get; set; }
+        public string[]? SelectedMalzemeler { get; set; } = Array.Empty<string>();
+
     }
 }

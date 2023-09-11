@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MalzemeTakip.Migrations
 {
     [DbContext(typeof(MalzemeTakipDbContext))]
-    [Migration("20230907113903_Initial Migration")]
+    [Migration("20230911121901_Initial Migration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -31,11 +31,10 @@ namespace MalzemeTakip.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("MalzemeMiktar")
+                    b.Property<int?>("MalzemeMiktar")
                         .HasColumnType("int");
 
                     b.Property<string>("MalzemeName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -49,14 +48,13 @@ namespace MalzemeTakip.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MalzemeMiktar")
+                    b.Property<int?>("MalzemeMiktar")
                         .HasColumnType("int");
 
+                    b.Property<string>("MalzemeName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("YemekName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

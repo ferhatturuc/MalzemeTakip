@@ -28,11 +28,10 @@ namespace MalzemeTakip.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("MalzemeMiktar")
+                    b.Property<int?>("MalzemeMiktar")
                         .HasColumnType("int");
 
                     b.Property<string>("MalzemeName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -46,14 +45,13 @@ namespace MalzemeTakip.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MalzemeMiktar")
+                    b.Property<int?>("MalzemeMiktar")
                         .HasColumnType("int");
 
+                    b.Property<string>("MalzemeName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("YemekName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

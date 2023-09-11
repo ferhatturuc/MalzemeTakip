@@ -1,6 +1,8 @@
 ﻿@model MalzemeTakip.Models.ViewModels.AddYemekRequest
 @{
 }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.7.0/dist/js/bootstrap.min.js"></script>
 
 <div class="bg-secondary bg-opacity-10 py-2">
     <div class="container">
@@ -12,18 +14,54 @@
     <form method="post">
         <div class="mb-3">
             <label class="form-label">Yemek İsmi</label>
-            <input type="text" class="form-control" id="YemekName" asp-for="YemekName" />
+            <input type="text" class="form-control" id="YemekName" asp-for="YemekName">
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" id="malzemeContainer">
             <label class="form-label">Malzemeler</label>
-            <select class="form-select" asp-items="@Model.Malzeme"
-                    asp-for="SelectedMalzeme">
-            </select>
+
+            <!-- Birden fazla malzeme girişi için tekrar eden bir alan -->
+            <div class="mb-3">
+                <select class="form-select" name="Malzemeler[0].MalzemeName">
+                    @foreach (var malzeme in Model.Malzemeler)
+                    {
+                        <option value="@malzeme.Value">@malzeme.Text</option>
+                    }
+                </select>
+                <input type="number" class="form-control" name="Malzemeler[0].MalzemeMiktar" placeholder="Miktar">
+            </div>
+
+            <!-- Yeni bir malzeme eklemek için düğme -->
+            <button type="button" class="btn btn-primary" id="addMalzeme">Malzeme Ekle</button>
         </div>
 
+
+
+
         <div class="mb-3">
-            <button type="submit" class="btn btn-dark">Submit</button>
+            <button type="submit" class="btn btn-dark">Gönder</button>
         </div>
     </form>
+
+    <script>
+        var malzemeCounter = 1; // İlk malzeme alanı varsa 1'den başlayın.
+        $('#addMalzeme').click(function () {
+            var newMalzemeHtml =
+                '<div class="mb-3">' +
+                '<select class="form-select" name="Malzemeler[' + malzemeCounter + '].MalzemeName">';
+        @foreach (var malzeme in Model.Malzemeler)
+        {
+            <text>
+                    newMalzemeHtml += '<option value="@malzeme.Value">@malzeme.Text</option>';
+            </text>
+        }
+                newMalzemeHtml +=
+            '</select>' +
+                '<input type="number" class="form-control" name="Malzemeler[' + malzemeCounter + '].MalzemeMiktar" placeholder="Miktar">' +
+                '</div>';
+            $('#malzemeContainer').append(newMalzemeHtml);
+            malzemeCounter++;
+        });
+    </script>
+
 </div>

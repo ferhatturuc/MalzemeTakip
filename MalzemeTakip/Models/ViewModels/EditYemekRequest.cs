@@ -3,6 +3,8 @@
     public class EditYemekRequest
     {
         public Guid Id { get; set; }
-        public string MalzemeName { get; set; }
+        public string YemekName { get; set; }
+        public List<AddMalzemeRequest> Malzemeler { get; set; } = new List<AddMalzemeRequest>();
+
     }
 }
