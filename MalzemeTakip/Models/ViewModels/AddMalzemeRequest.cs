@@ -5,6 +5,6 @@
         public string? MalzemeName { get; set; }
 
         public int? MalzemeMiktar { get; set; }
-        public Guid Id { get; set; }
+        public int? Id { get; set; }
     }
 }

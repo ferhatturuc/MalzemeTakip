@@ -10,9 +10,9 @@ namespace MalzemeTakip.Repositories
 
         Task<Yemek> AddAsync(Yemek yemek);
         //Task<Yemek> AddAsync(string yemekName, string malzemeName, int malzemeMiktar);
-
+        Task<Yemek> AddAsync(string yemekName, List<Malzeme> malzemeler);
         Task<Yemek?> UpdateAsync(Yemek yemek);
 
-        Task<Yemek?> DeleteAsync(Guid id);
+        Task<Yemek?> DeleteAsync(int id);
     }
 }

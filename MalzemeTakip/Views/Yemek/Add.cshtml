@@ -1,6 +1,7 @@
 ﻿@model MalzemeTakip.Models.ViewModels.AddYemekRequest
 @{
 }
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.7.0/dist/js/bootstrap.min.js"></script>
 
@@ -23,7 +24,7 @@
             <!-- Birden fazla malzeme girişi için tekrar eden bir alan -->
             <div class="mb-3">
                 <select class="form-select" name="Malzemeler[0].MalzemeName">
-                    @foreach (var malzeme in Model.Malzemeler)
+                    @foreach (var malzeme in Model.MalzemeYemekler)
                     {
                         <option value="@malzeme.Value">@malzeme.Text</option>
                     }
@@ -35,11 +36,8 @@
             <button type="button" class="btn btn-primary" id="addMalzeme">Malzeme Ekle</button>
         </div>
 
-
-
-
         <div class="mb-3">
-            <button type="submit" class="btn btn-dark">Gönder</button>
+            <button type="submit" class="btn btn-dark">Kaydet</button>
         </div>
     </form>
 
@@ -49,7 +47,7 @@
             var newMalzemeHtml =
                 '<div class="mb-3">' +
                 '<select class="form-select" name="Malzemeler[' + malzemeCounter + '].MalzemeName">';
-        @foreach (var malzeme in Model.Malzemeler)
+        @foreach (var malzeme in Model.MalzemeYemekler)
         {
             <text>
                     newMalzemeHtml += '<option value="@malzeme.Value">@malzeme.Text</option>';
@@ -63,5 +61,4 @@
             malzemeCounter++;
         });
     </script>
-
 </div>

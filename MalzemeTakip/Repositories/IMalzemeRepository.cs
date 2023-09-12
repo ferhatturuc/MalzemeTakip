@@ -8,7 +8,6 @@ namespace MalzemeTakip.Repositories
         Task<Malzeme> GetAsync(string name);
         Task<Malzeme> AddAsync(Malzeme malzeme);
         Task<Malzeme?> UpdateAsync(Malzeme malzeme);
-        Task<Malzeme?> DeleteAsync(Guid id);
-
+        Task<Malzeme?> DeleteAsync(int? id);
     }
 }

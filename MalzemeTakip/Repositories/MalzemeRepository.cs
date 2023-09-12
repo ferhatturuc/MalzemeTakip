@@ -20,7 +20,7 @@ namespace MalzemeTakip.Repositories
             return Malzeme;
         }
 
-        public async Task<Malzeme?> DeleteAsync(Guid id)
+        public async Task<Malzeme?> DeleteAsync(int? id)
         {
             var existingMalzeme = await malzemeTakipDbContext.Malzemeler.FindAsync(id);
 

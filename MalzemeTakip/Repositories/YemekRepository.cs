@@ -12,19 +12,19 @@ namespace MalzemeTakip.Repositories
     {
         private readonly MalzemeTakipDbContext malzemeTakipDbContext;
 
-        public YemekRepository(MalzemeTakipDbContext context)
+        public YemekRepository(MalzemeTakipDbContext malzemeTakipDbContext)
         {
-            malzemeTakipDbContext = context;
+            this.malzemeTakipDbContext = malzemeTakipDbContext;
         }
 
         public async Task<IEnumerable<Yemek>> GetAllAsync()
         {
-            return await malzemeTakipDbContext.Yemekler.Include(y => y.Malzemeler).ToListAsync();
+            return await malzemeTakipDbContext.Yemekler.Include(y => y.MalzemeYemekler).ToListAsync();
         }
 
         public async Task<Yemek?> GetAsync(string name)
         {
-            return await malzemeTakipDbContext.Yemekler.Include(y => y.Malzemeler).FirstOrDefaultAsync(y => y.YemekName == name);
+            return await malzemeTakipDbContext.Yemekler.Include(y => y.MalzemeYemekler).FirstOrDefaultAsync(y => y.YemekName == name);
         }
 
         public async Task<Yemek> AddAsync(Yemek yemek)
@@ -34,33 +34,18 @@ namespace MalzemeTakip.Repositories
             return yemek;
         }
 
-      /*  public async Task<Yemek> AddAsync(string yemekName, string malzemeName, int malzemeMiktar)
-        {
-            var yemek = await GetAsync(yemekName);
-            var malzeme = await malzemeTakipDbContext.Malzemeler.FirstOrDefaultAsync(m => m.MalzemeName == malzemeName);
-
-            if (yemek == null || malzeme == null)
-            {
-                return null;
-            }
-
-            malzeme.MalzemeMiktar = malzemeMiktar;
-            yemek.Malzemeler.Add(malzeme);
-
-            await malzemeTakipDbContext.SaveChangesAsync();
-
-            return yemek;
-        }*/
+      
 
         public async Task<Yemek?> UpdateAsync(Yemek yemek)
         {
-            var existingYemek = await malzemeTakipDbContext.Yemekler.Include(x => x.Malzemeler).FirstOrDefaultAsync(x => x.Id == yemek.Id);
+            var existingYemek = await malzemeTakipDbContext.Yemekler.Include(x => x.MalzemeYemekler).FirstOrDefaultAsync(x => x.Id == yemek.Id);
+            
             if (existingYemek != null)
             {
                 existingYemek.Id= yemek.Id;
                 existingYemek.YemekName = yemek.YemekName;
 
-                existingYemek.Malzemeler = yemek.Malzemeler;
+                existingYemek.MalzemeYemekler = yemek.MalzemeYemekler;
 
                 await malzemeTakipDbContext.SaveChangesAsync();
                 return existingYemek;
@@ -69,7 +54,7 @@ namespace MalzemeTakip.Repositories
             return null;
         }
 
-        public async Task<Yemek?> DeleteAsync(Guid id)
+        public async Task<Yemek?> DeleteAsync(int id)
         {
             var existingYemek = await malzemeTakipDbContext.Yemekler.FindAsync(id);
     
@@ -84,70 +69,35 @@ namespace MalzemeTakip.Repositories
 
             return null;
         }
-    }
-}
 
-
-/*using MalzemeTakip.Data;
-using MalzemeTakip.Models.Domain;
-using Microsoft.EntityFrameworkCore;
-
-namespace MalzemeTakip.Repositories
-{
-    public class YemekRepository : IYemekRepository
-    {
-        private readonly MalzemeTakipDbContext malzemeTakipDbContext;
-
-        public YemekRepository(MalzemeTakipDbContext malzemeTakipDbContext)
+        public async Task<Yemek> AddAsync(string yemekName, List<Malzeme> malzemeler)
         {
-            this.malzemeTakipDbContext = malzemeTakipDbContext;
-        }
-        public async Task<Yemek> AddAsync(Yemek yemek)
-        {
+            // Yemek nesnesini tanımlayın ve yemek adını ayarlayın
+            var yemek = new Yemek
+            {
+                YemekName = yemekName
+            };
+
+            ICollection<MalzemeYemek> malzemeYemekler = new List<MalzemeYemek>();
+
+            foreach (var malzeme in malzemeler)
+            {
+                // Yemeğe bağlı MalzemeYemek nesnesini oluşturun
+                var malzemeYemek = new MalzemeYemek
+                {
+                    Malzeme = malzeme,
+                    Yemek = yemek,
+                    Miktar = (int)malzeme.MalzemeMiktar // Malzeme miktarını ekleyin
+                };
+
+                // MalzemeYemekleri koleksiyonuna ekleyin
+                yemek.MalzemeYemekler = malzemeYemekler;
+            }
+
             await malzemeTakipDbContext.AddAsync(yemek);
             await malzemeTakipDbContext.SaveChangesAsync();
+
             return yemek;
-        }
-
-        public async Task<Yemek?> DeleteAsync(Guid id)
-        {
-            var existingYemek = await malzemeTakipDbContext.Yemekler.FindAsync(id);
-
-            if (existingYemek != null)
-            {
-                malzemeTakipDbContext.Yemekler.Remove(existingYemek);
-                await malzemeTakipDbContext.SaveChangesAsync();
-                return existingYemek;
-            }
-
-            return null;
-        }
-        public async Task<IEnumerable<Yemek>> GetAllAsync()
-        {
-            return await malzemeTakipDbContext.Yemekler.Include(x => x.Malzemeler).ToListAsync();
-        }
-
-        public Task<Yemek?> GetAsync(string name)
-        {
-            return malzemeTakipDbContext.Yemekler.FirstOrDefaultAsync(x => x.YemekName == name);
-        }
-
-        public async Task<Yemek?> UpdateAsync(Yemek yemek)
-        {
-            var existingYemek = await malzemeTakipDbContext.Yemekler.FindAsync(yemek.Id);
-
-            if (existingYemek != null)
-            {
-                existingYemek.YemekName = yemek.YemekName;
-               // existingYemek.Malzemeler = yemek.Malzemeler;
-
-                await malzemeTakipDbContext.SaveChangesAsync();
-
-                return existingYemek;
-            }
-
-            return null;
         }
     }
 }
-*/

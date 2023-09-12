@@ -2,7 +2,7 @@
 {
     public class EditMalzemeRequest
     {
-        public Guid Id { get; set; }
-        public string MalzemeName { get; set; }
+        public int Id { get; set; }
+        public string? MalzemeName { get; set; }
     }
 }
