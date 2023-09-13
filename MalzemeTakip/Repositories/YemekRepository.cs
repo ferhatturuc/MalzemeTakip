@@ -19,8 +19,12 @@ namespace MalzemeTakip.Repositories
 
         public async Task<IEnumerable<Yemek>> GetAllAsync()
         {
-            return await malzemeTakipDbContext.Yemekler.Include(y => y.MalzemeYemekler).ToListAsync();
+            return await malzemeTakipDbContext.Yemekler
+                .Include(y => y.MalzemeYemekler)
+                .ThenInclude(my => my.Malzeme) // MalzemeYemek içindeki Malzeme'yi de yükleyin
+                .ToListAsync();
         }
+
 
         public async Task<Yemek?> GetAsync(string name)
         {
