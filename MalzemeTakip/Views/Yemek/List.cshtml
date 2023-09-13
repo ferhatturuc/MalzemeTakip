@@ -7,7 +7,6 @@
         <h1> Yemekleri Listele</h1>
     </div>
 </div>
-
 <div class="container py-5">
     @if (Model != null && Model.Any())
     {
@@ -16,8 +15,7 @@
                 <tr>
                     <th>Id</th>
                     <th>Yemek Adı</th>
-                    <th>Malzemeler</th>
-                    <th>Malzeme Miktarı</th>
+                    <th>Malzemeler-Malzeme Miktarı gr</th>
                     <th>İşlemler</th> <!-- Yemek düzenleme bağlantısı için yeni sütun eklendi -->
                 </tr>
             </thead>
@@ -28,25 +26,33 @@
                         <td>@yemek.Id</td>
                         <td>@yemek.YemekName</td>
                         <td>
-                            <ul>
-                                <!-- Malzemeleri liste halinde göstermek için bir liste kullanıldı -->
-                                @foreach (var malzemeYemek in yemek.MalzemeYemekler)
-                                {
-                                    <li>
-                                        @if (malzemeYemek.Malzeme != null && malzemeYemek.Miktar != null)
-                                        {
-                                            @malzemeYemek.Malzeme.MalzemeName
-                                            @malzemeYemek.Miktar
+                            @if (yemek.MalzemeYemekler.Any())
+                            {
+                                <ul>
+                                    <!-- Malzemeleri liste halinde göstermek için bir liste kullanıldı -->
+                                    @foreach (var malzemeYemek in yemek.MalzemeYemekler)
+                                    {
+                                        <li>
+                                            @if (malzemeYemek.Malzeme != null)
+                                            {
+                                                @malzemeYemek.Malzeme.MalzemeName
                                             }
-                                        else
-                                        {
-                                            <p>Malzeme bilgisi bulunamadı!</p>
-                                        }
-                                    </li>
-                                }
-
-
-                            </ul>
+                                            @if (malzemeYemek.Miktar != null)
+                                            {
+                                                <span>Miktar: @malzemeYemek.Miktar</span>
+                                            }
+                                            else
+                                            {
+                                                <p>Malzeme bilgisi bulunamadı!</p>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p>Malzeme bulunamadı!</p> <!-- Malzemesi olmayan yemek için mesaj -->
+                            }
                         </td>
                         <td>
                             <a asp-area="" asp-controller="Yemek"
