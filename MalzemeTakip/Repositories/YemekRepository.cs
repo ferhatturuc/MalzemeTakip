@@ -1,5 +1,6 @@
 ﻿using MalzemeTakip.Data;
 using MalzemeTakip.Models.Domain;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,10 +27,21 @@ namespace MalzemeTakip.Repositories
         }
 
 
+        /*  public async Task<Yemek?> GetAsync(string name)
+          {
+              return await malzemeTakipDbContext.Yemekler.Include(y => y.MalzemeYemekler).FirstOrDefaultAsync(y => y.YemekName == name);
+          }*/
+
         public async Task<Yemek?> GetAsync(string name)
         {
-            return await malzemeTakipDbContext.Yemekler.Include(y => y.MalzemeYemekler).FirstOrDefaultAsync(y => y.YemekName == name);
+            var yemek = await malzemeTakipDbContext.Yemekler
+                .Include(y => y.MalzemeYemekler)
+                .FirstOrDefaultAsync(y => y.YemekName == name);
+
+            return yemek;
         }
+
+
 
         public async Task<Yemek> AddAsync(Yemek yemek)
         {
@@ -38,15 +50,14 @@ namespace MalzemeTakip.Repositories
             return yemek;
         }
 
-      
 
         public async Task<Yemek?> UpdateAsync(Yemek yemek)
         {
             var existingYemek = await malzemeTakipDbContext.Yemekler.Include(x => x.MalzemeYemekler).FirstOrDefaultAsync(x => x.Id == yemek.Id);
-            
+
             if (existingYemek != null)
             {
-                existingYemek.Id= yemek.Id;
+                existingYemek.Id = yemek.Id;
                 existingYemek.YemekName = yemek.YemekName;
 
                 existingYemek.MalzemeYemekler = yemek.MalzemeYemekler;
@@ -61,7 +72,7 @@ namespace MalzemeTakip.Repositories
         public async Task<Yemek?> DeleteAsync(int id)
         {
             var existingYemek = await malzemeTakipDbContext.Yemekler.FindAsync(id);
-    
+
 
             if (existingYemek != null)
             {

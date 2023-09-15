@@ -23,11 +23,25 @@
 
             <div class="mb-3">
                 <label class="form-label">Malzemeler</label>
-                <select class="form-select"
-                        asp-items="@Model.Malzemeler"
-                        asp-for="SelectedMalzemeler">
-                </select>
+                <ul>
+                    <!-- Malzemeleri liste halinde göstermek için ul elementi kullanılıyor -->
+                    @foreach (var malzemeYemek in Model.MalzemeYemekler)
+                    {
+                        <li>
+                            @if (malzemeYemek != null)
+                            {
+                                <span>Malzeme: @malzemeYemek.MalzemeId</span>
+                                <span>Miktar: @malzemeYemek.Miktar</span>
+                            }
+                            else
+                            {
+                                <p>Malzeme bilgisi bulunamadı!</p>
+                            }
+                        </li>
+                    }
+                </ul>
             </div>
+
 
             <div class="mb-3">
                 <div class="d-flex">

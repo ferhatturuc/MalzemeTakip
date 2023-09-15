@@ -13,7 +13,7 @@ namespace MalzemeTakip.Controllers
         private readonly IMalzemeRepository malzemeRepository;
         private readonly IYemekRepository yemekRepository;
 
-        public YemekController(IMalzemeRepository malzemeRepository,IYemekRepository yemekRepository)
+        public YemekController(IMalzemeRepository malzemeRepository, IYemekRepository yemekRepository)
         {
             this.malzemeRepository = malzemeRepository;
             this.yemekRepository = yemekRepository;
@@ -49,7 +49,10 @@ namespace MalzemeTakip.Controllers
             };
 
             // MalzemeYemekleri temsil eden bir ICollection<MalzemeYemek> oluşturun
-            ICollection<MalzemeYemek> malzemeYemekler = new List<MalzemeYemek>();
+            //ICollection<MalzemeYemek> malzemeYemekler = new List<MalzemeYemek>();
+
+            // Yemeğe ait MalzemeYemek koleksiyonunu oluşturun
+            var malzemeYemekler = new List<MalzemeYemek>();
 
             foreach (var selectedMalzemeAdi in addYemekRequest.SelectedMalzemeler)
             {
@@ -70,6 +73,10 @@ namespace MalzemeTakip.Controllers
                 }
             }
 
+            // Yemek nesnesine malzemeYemekler koleksiyonunu atayın
+            yemek.MalzemeYemekler = malzemeYemekler;
+
+
             // Yemek nesnesinin MalzemeYemekler koleksiyonunu ayarlayın
             yemek.MalzemeYemekler = malzemeYemekler;
 
@@ -78,6 +85,7 @@ namespace MalzemeTakip.Controllers
 
             return RedirectToAction("Add");
         }
+
 
 
 
@@ -98,11 +106,15 @@ namespace MalzemeTakip.Controllers
 
             if (yemek != null)
             {
+               
+
                 var editYemekRequest = new EditYemekRequest
                 {
                     Id = yemek.Id,
                     YemekName = yemek.YemekName,
+                    MalzemeYemekler = yemek.MalzemeYemekler
                 };
+
 
                 return View(editYemekRequest);
             }
@@ -113,25 +125,63 @@ namespace MalzemeTakip.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EditYemekRequest editYemekRequest)
         {
-            var yemek = new Yemek
-            {
-                Id = editYemekRequest.Id,
-                YemekName = editYemekRequest.YemekName,
-            };
+            // İlgili yemeği veritabanından alın
+            var existingYemek = await yemekRepository.GetAsync(editYemekRequest.YemekName);
 
-            var updatedYemek = await yemekRepository.UpdateAsync(yemek);
-
-            if (updatedYemek != null)
+            if (existingYemek != null)
             {
-                // Show success notification
+                // Yemek adı ve diğer özelliklerini güncelle
+                existingYemek.YemekName = editYemekRequest.YemekName;
+
+                // Malzemeleri güncelle
+                if (editYemekRequest.SelectedMalzemeYemekler != null && editYemekRequest.SelectedMalzemeYemekler.Any())
+                {
+                    // Seçilen malzemelerin listesini temizle
+                    existingYemek.MalzemeYemekler.Clear();
+
+                    foreach (var malzemeName in editYemekRequest.SelectedMalzemeYemekler)
+                    {
+                        // Malzeme adına göre malzemeyi veritabanından alın
+                        var malzeme = await malzemeRepository.GetAsync(malzemeName);
+
+                        if (malzeme != null)
+                        {
+                            // Malzeme-Yemek ilişkisini oluşturun ve miktarı ayarlayın
+                            var malzemeYemek = new MalzemeYemek
+                            {
+                                Malzeme = malzeme,
+                                Yemek = existingYemek,
+                                Miktar = 1 // Burada miktarı uygun bir şekilde ayarlayabilirsiniz
+                            };
+
+                            // Malzemeyi yemeğe ekle
+                            existingYemek.MalzemeYemekler.Add(malzemeYemek);
+                        }
+                    }
+                }
+
+
+                // Yemeği güncelle
+                var updatedYemek = await yemekRepository.UpdateAsync(existingYemek);
+
+                if (updatedYemek != null)
+                {
+                    // Başarı bildirimi göster
+                }
+                else
+                {
+                    // Hata bildirimi göster
+                }
+
+                return RedirectToAction("Edit", new { name = editYemekRequest.YemekName });
             }
             else
             {
-                // Show error notification
+                // Yemek bulunamadı hatası göster
+                return RedirectToAction("Edit", new { name = editYemekRequest.YemekName });
             }
-
-            return RedirectToAction("Edit", new { name = editYemekRequest.YemekName });
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Delete(AddYemekRequest editYemekRequest)
