@@ -35,9 +35,6 @@ namespace MalzemeTakip.Controllers
             return View(model);
         }
 
-
-        // Diğer işlevler burada
-
         // Yemek için yeni malzeme eklemek için bir ekleme işlevi
         [HttpPost]
         public async Task<IActionResult> Add(AddYemekRequest addYemekRequest)
@@ -54,7 +51,7 @@ namespace MalzemeTakip.Controllers
             // Yemeğe ait MalzemeYemek koleksiyonunu oluşturun
             var malzemeYemekler = new List<MalzemeYemek>();
 
-            foreach (var selectedMalzemeAdi in addYemekRequest.SelectedMalzemeler)
+           /* foreach (var selectedMalzemeAdi in addYemekRequest.SelectedMalzemeler)
             {
                 var existingMalzeme = await malzemeRepository.GetAsync(selectedMalzemeAdi);
 
@@ -71,7 +68,7 @@ namespace MalzemeTakip.Controllers
                     // MalzemeYemekleri koleksiyonuna ekleyin
                     malzemeYemekler.Add(malzemeYemek);
                 }
-            }
+            }*/
 
             // Yemek nesnesine malzemeYemekler koleksiyonunu atayın
             yemek.MalzemeYemekler = malzemeYemekler;
@@ -86,9 +83,6 @@ namespace MalzemeTakip.Controllers
             return RedirectToAction("Add");
         }
 
-
-
-
         [HttpGet]
         [ActionName("List")]
         public async Task<IActionResult> List()
@@ -100,9 +94,9 @@ namespace MalzemeTakip.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(string name)
+        public async Task<IActionResult> Edit(int id)
         {
-            var yemek = await yemekRepository.GetAsync(name);
+            var yemek = await yemekRepository.GetAsync(id);
 
             if (yemek != null)
             {
@@ -126,7 +120,7 @@ namespace MalzemeTakip.Controllers
         public async Task<IActionResult> Edit(EditYemekRequest editYemekRequest)
         {
             // İlgili yemeği veritabanından alın
-            var existingYemek = await yemekRepository.GetAsync(editYemekRequest.YemekName);
+            var existingYemek = await yemekRepository.GetAsync(editYemekRequest.Id);
 
             if (existingYemek != null)
             {
@@ -134,15 +128,15 @@ namespace MalzemeTakip.Controllers
                 existingYemek.YemekName = editYemekRequest.YemekName;
 
                 // Malzemeleri güncelle
-                if (editYemekRequest.SelectedMalzemeYemekler != null && editYemekRequest.SelectedMalzemeYemekler.Any())
+                /*if (editYemekRequest.SelectedMalzemeYemekler != null && editYemekRequest.SelectedMalzemeYemekler.Any())
                 {
                     // Seçilen malzemelerin listesini temizle
                     existingYemek.MalzemeYemekler.Clear();
 
-                    foreach (var malzemeName in editYemekRequest.SelectedMalzemeYemekler)
+                    foreach (var id in editYemekRequest.MalzemeId)
                     {
                         // Malzeme adına göre malzemeyi veritabanından alın
-                        var malzeme = await malzemeRepository.GetAsync(malzemeName);
+                        var malzeme = await malzemeRepository.GetAsync(id);
 
                         if (malzeme != null)
                         {
@@ -158,7 +152,7 @@ namespace MalzemeTakip.Controllers
                             existingYemek.MalzemeYemekler.Add(malzemeYemek);
                         }
                     }
-                }
+                }*/
 
 
                 // Yemeği güncelle
@@ -182,7 +176,6 @@ namespace MalzemeTakip.Controllers
             }
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Delete(AddYemekRequest editYemekRequest)
         {
@@ -196,6 +189,12 @@ namespace MalzemeTakip.Controllers
 
             // Show an error notification
             return RedirectToAction("Edit", new { name = editYemekRequest.YemekName });
+        }
+
+
+        public Malzeme GetMalzemeById(int malzemeId)
+        {
+            return malzemeRepository.GetMalzemeById(malzemeId);
         }
     }
 }

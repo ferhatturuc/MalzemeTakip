@@ -39,9 +39,9 @@ namespace MalzemeTakip.Repositories
             return await malzemeTakipDbContext.Malzemeler.ToListAsync();
         }
 
-        public Task<Malzeme?> GetAsync(string name)
+        public Task<Malzeme?> GetAsync(int id)
         {
-            return malzemeTakipDbContext.Malzemeler.FirstOrDefaultAsync(x => x.MalzemeName == name);
+            return malzemeTakipDbContext.Malzemeler.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Malzeme?> UpdateAsync(Malzeme Malzeme)
@@ -58,6 +58,11 @@ namespace MalzemeTakip.Repositories
             }
 
             return null;
+        }
+
+        public Malzeme GetMalzemeById(int malzemeId)
+        {
+            return malzemeTakipDbContext.Malzemeler.FirstOrDefault(m => m.Id == malzemeId);
         }
     }
 }

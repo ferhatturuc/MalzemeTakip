@@ -6,7 +6,7 @@ namespace MalzemeTakip.Repositories
     {
         Task<IEnumerable<Yemek?>> GetAllAsync();
 
-        Task<Yemek?> GetAsync(string name);
+        Task<Yemek?> GetAsync(int id);
 
         Task<Yemek> AddAsync(Yemek yemek);
         //Task<Yemek> AddAsync(string yemekName, string malzemeName, int malzemeMiktar);

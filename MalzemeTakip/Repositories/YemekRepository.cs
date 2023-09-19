@@ -32,11 +32,11 @@ namespace MalzemeTakip.Repositories
               return await malzemeTakipDbContext.Yemekler.Include(y => y.MalzemeYemekler).FirstOrDefaultAsync(y => y.YemekName == name);
           }*/
 
-        public async Task<Yemek?> GetAsync(string name)
+        public async Task<Yemek?> GetAsync(int id)
         {
             var yemek = await malzemeTakipDbContext.Yemekler
                 .Include(y => y.MalzemeYemekler)
-                .FirstOrDefaultAsync(y => y.YemekName == name);
+                .FirstOrDefaultAsync(y => y.Id == id);
 
             return yemek;
         }
@@ -113,6 +113,11 @@ namespace MalzemeTakip.Repositories
             await malzemeTakipDbContext.SaveChangesAsync();
 
             return yemek;
+        }
+
+        public Malzeme GetMalzemeById(int malzemeId)
+        {
+            return malzemeTakipDbContext.Malzemeler.FirstOrDefault(m => m.Id == malzemeId);
         }
     }
 }

@@ -49,9 +49,9 @@ namespace MalzemeTakip.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(string name)
+        public async Task<IActionResult> Edit(int id)
         {
-            var malzeme = await malzemeRepository.GetAsync(name);
+            var malzeme = await malzemeRepository.GetAsync(id);
 
             if (malzeme != null)
             {
@@ -102,8 +102,12 @@ namespace MalzemeTakip.Controllers
             }
 
             // Show an error notification
-            return RedirectToAction("Edit", new { name = editMalzemeRequest.MalzemeName });
+            return RedirectToAction("Edit", new { Id = editMalzemeRequest.Id });
         }
- 
+
+        public Malzeme GetMalzemeById(int malzemeId)
+        {
+            return malzemeRepository.GetMalzemeById(malzemeId);
+        }
     }
 }
