@@ -50,10 +50,10 @@ namespace MalzemeTakip.Controllers
 
             // Yemeğe ait MalzemeYemek koleksiyonunu oluşturun
             var malzemeYemekler = new List<MalzemeYemek>();
-
-           /* foreach (var selectedMalzemeAdi in addYemekRequest.SelectedMalzemeler)
+            foreach (var selectedMalzemeId in addYemekRequest.SelectedMalzemeler)
             {
-                var existingMalzeme = await malzemeRepository.GetAsync(selectedMalzemeAdi);
+                var selectedMalzemeIdAsInt = int.Parse(selectedMalzemeId.ToString());
+                var existingMalzeme = await malzemeRepository.GetAsync(selectedMalzemeIdAsInt);
 
                 if (existingMalzeme != null)
                 {
@@ -66,9 +66,10 @@ namespace MalzemeTakip.Controllers
                     };
 
                     // MalzemeYemekleri koleksiyonuna ekleyin
-                    malzemeYemekler.Add(malzemeYemek);
+                    yemek.MalzemeYemekler.Add(malzemeYemek);
                 }
-            }*/
+            }
+
 
             // Yemek nesnesine malzemeYemekler koleksiyonunu atayın
             yemek.MalzemeYemekler = malzemeYemekler;
@@ -136,7 +137,7 @@ namespace MalzemeTakip.Controllers
                     foreach (var id in editYemekRequest.MalzemeId)
                     {
                         // Malzeme adına göre malzemeyi veritabanından alın
-                        var malzeme = await malzemeRepository.GetAsync(id);
+                        var malzeme = await malzemeRepositorry.GetAsync(id);
 
                         if (malzeme != null)
                         {
@@ -190,7 +191,6 @@ namespace MalzemeTakip.Controllers
             // Show an error notification
             return RedirectToAction("Edit", new { name = editYemekRequest.YemekName });
         }
-
 
         public Malzeme GetMalzemeById(int malzemeId)
         {
